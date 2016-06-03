@@ -40,11 +40,11 @@ namespace MPCExtensions.Controls
         #region ctor
         public VoiceToTextBox()
         {
-            this.DefaultStyleKey = typeof(VoiceToTextBox);
+            DefaultStyleKey = typeof(VoiceToTextBox);
             timer = new DispatcherTimer();
             timer.Tick += Timer_Tick;
             timer.Interval = TimeSpan.FromMilliseconds(100);
-            this.Unloaded += VoiceToTextBox_Unloaded;
+            Unloaded += VoiceToTextBox_Unloaded;
         }
         #endregion
 
@@ -55,7 +55,7 @@ namespace MPCExtensions.Controls
 
             voiceButton = GetTemplateChild(VOICE_BUTTON_NAME) as Button;
             stopVoiceButton = GetTemplateChild(STOP_VOICE_BUTTON_NAME) as Button;
-            this.PlaceholderText = PLACE_HOLDER_TEXT;
+            PlaceholderText = PLACE_HOLDER_TEXT;
 
             initialization = InitializeAsync();
 
@@ -87,8 +87,12 @@ namespace MPCExtensions.Controls
         #region private methods
         private void VoiceToTextBox_Unloaded(object sender, RoutedEventArgs e)
         {
-            this.UnregisterPropertyChangedCallback(TextBox.IsReadOnlyProperty, readOnlyCalbackToken);
-            this.Unloaded -= VoiceToTextBox_Unloaded;
+            // 03/06/2016 workarround: when control is unloaded before being displayed
+            // it that case this generates a null reference exception
+            this?.UnregisterPropertyChangedCallback(TextBox.IsReadOnlyProperty, readOnlyCalbackToken);
+            if (this != null)
+                Unloaded -= VoiceToTextBox_Unloaded;
+
             voiceButton.Click -= VoiceButton_Click;
             stopVoiceButton.Click -= StopVoiceButton_Click;
             timer.Tick -= Timer_Tick;

@@ -76,3 +76,4 @@ xcopy.exe "%NUPKG%\*.nupkg" "c:\nuget-local\" /y >nul
 :end
 echo -- NuGet Process End --
 exit /b 0
+@pause
